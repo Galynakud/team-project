@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Адмін-панель</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        /* Updated gradient to match login page coral-teal theme */
+        background: linear-gradient(
+          135deg,
+          #ff6b9d 0%,
+          #c94b9e 33%,
+          #886ab5 66%,
+          #4ecdc4 100%
+        );
+        min-height: 100vh;
+        padding: 20px;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      /* Added animated floating circles like login page */
+      .floating-shape {
+        position: fixed;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .shape1 {
+        width: 300px;
+        height: 300px;
+        top: -100px;
+        right: -100px;
+        animation: float 20s ease-in-out infinite;
+      }
+
+      .shape2 {
+        width: 200px;
+        height: 200px;
+        bottom: -50px;
+        left: -50px;
+        animation: float 15s ease-in-out infinite reverse;
+      }
+
+      .shape3 {
+        width: 150px;
+        height: 150px;
+        top: 50%;
+        left: 50%;
+        animation: float 18s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        25% {
+          transform: translate(30px, -30px) rotate(90deg);
+        }
+        50% {
+          transform: translate(-20px, 20px) rotate(180deg);
+        }
+        75% {
+          transform: translate(-30px, -20px) rotate(270deg);
+        }
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 32px rgba(255, 107, 157, 0.2);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .header h1 {
+        background: linear-gradient(
+          135deg,
+          #ff6b9d 0%,
+          #c94b9e 50%,
+          #4ecdc4 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 32px;
+        font-weight: 800;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.9);
+        color: #64748b;
+        border: 2px solid rgba(255, 107, 157, 0.2);
+      }
+
+      .btn-secondary:hover {
+        background: white;
+        border-color: rgba(255, 107, 157, 0.4);
+        transform: translateY(-1px);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #ff6b9d 0%, #c94b9e 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+      }
+
+      /* Added admin navigation tabs */
+      .admin-nav {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 32px rgba(255, 107, 157, 0.2);
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        animation: fadeInUp 0.6s ease-out 0.1s both;
+      }
+
+      .admin-tab {
+        padding: 12px 24px;
+        background: transparent;
+        border: none;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        transition: all 0.3s;
+        white-space: nowrap;
+      }
+
+      .admin-tab.active {
+        background: linear-gradient(135deg, #ff6b9d 0%, #c94b9e 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+      }
+
+      .admin-tab:hover:not(.active) {
+        background: rgba(255, 107, 157, 0.1);
+        color: #ff6b9d;
+      }
+
+      .admin-section {
+        display: none;
+      }
+
+      .admin-section.active {
+        display: block;
+        animation: fadeIn 0.4s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+        animation: fadeInUp 0.6s ease-out 0.2s both;
+      }
+
+      .stat-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 8px 32px rgba(255, 107, 157, 0.15);
+        transition: all 0.3s;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+
+      .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(255, 107, 157, 0.25);
+      }
+
+      .stat-label {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+
+      .stat-value {
+        background: linear-gradient(
+          135deg,
+          #ff6b9d 0%,
+          #c94b9e 50%,
+          #4ecdc4 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 36px;
+        font-weight: 800;
+      }
+
+      .table-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 8px 32px rgba(255, 107, 157, 0.15);
+        overflow-x: auto;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+
+      .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .table-header h2 {
+        background: linear-gradient(135deg, #ff6b9d 0%, #c94b9e 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .search-box {
+        padding: 12px 16px;
+        border: 2px solid rgba(255, 107, 157, 0.2);
+        border-radius: 12px;
+        font-size: 14px;
+        width: 300px;
+        max-width: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        transition: all 0.3s;
+      }
+
+      .search-box:focus {
+        outline: none;
+        border-color: #ff6b9d;
+        box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 14px;
+        border-bottom: 1px solid rgba(255, 107, 157, 0.1);
+      }
+
+      th {
+        color: #64748b;
+        font-weight: 600;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      td {
+        color: #334155;
+        font-size: 14px;
+      }
+
+      tr:hover {
+        background: rgba(255, 107, 157, 0.05);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        padding: 8px 16px;
+        font-size: 13px;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+      }
+
+      .btn-danger:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+      }
+
+      .btn-small {
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #64748b;
+      }
+
+      .empty-state-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+
+      /* Added settings forms */
+      .settings-panel {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 8px 32px rgba(255, 107, 157, 0.15);
+        margin-bottom: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+
+      .settings-panel h3 {
+        background: linear-gradient(135deg, #ff6b9d 0%, #c94b9e 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #334155;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      input[type="number"],
+      input[type="text"],
+      select {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid rgba(255, 107, 157, 0.2);
+        border-radius: 12px;
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.8);
+        transition: all 0.3s;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: #ff6b9d;
+        box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
+      }
+
+      .info-box {
+        background: rgba(240, 249, 255, 0.9);
+        border-left: 4px solid #4ecdc4;
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+      }
+
+      .info-box p {
+        color: #334155;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      /* Added charts and graphs styles */
+      .chart-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 8px 32px rgba(255, 107, 157, 0.15);
+        margin-bottom: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+
+      .chart-title {
+        background: linear-gradient(135deg, #ff6b9d 0%, #c94b9e 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+
+      .activity-log {
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .activity-item {
+        padding: 14px;
+        border-bottom: 1px solid rgba(255, 107, 157, 0.1);
+        font-size: 14px;
+        color: #334155;
+        transition: all 0.2s;
+      }
+
+      .activity-item:hover {
+        background: rgba(255, 107, 157, 0.05);
+      }
+
+      .activity-item:last-child {
+        border-bottom: none;
+      }
+
+      .activity-time {
+        color: #94a3b8;
+        font-size: 12px;
+      }
+
+      @media (max-width: 640px) {
+        .header {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .search-box {
+          width: 100%;
+        }
+
+        table {
+          font-size: 12px;
+        }
+
+        th,
+        td {
+          padding: 8px;
+        }
+
+        .admin-nav {
+          flex-wrap: wrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Added floating animated shapes -->
+    <div class="floating-shape shape1"></div>
+    <div class="floating-shape shape2"></div>
+    <div class="floating-shape shape3"></div>
+
+    <div class="container">
+      <div class="header">
+        <h1>🔐 Адмін-панель</h1>
+        <!-- Replaced "Назад до входу" button with a "Logout" button -->
+        <button class="btn btn-secondary" onclick="logout()">Вийти</button>
+      </div>
+
+      <!-- Added admin navigation -->
+      <div class="admin-nav">
+        <button class="admin-tab active" onclick="switchAdminTab('users')">
+          👥 Користувачі
+        </button>
+        <button class="admin-tab" onclick="switchAdminTab('database')">
+          💾 База даних
+        </button>
+        <button class="admin-tab" onclick="switchAdminTab('monitoring')">
+          📊 Моніторинг
+        </button>
+        <button class="admin-tab" onclick="switchAdminTab('analytics')">
+          📈 Аналітика
+        </button>
+        <button class="admin-tab" onclick="switchAdminTab('settings')">
+          ⚙️ Налаштування
+        </button>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-label">Всього користувачів</div>
+          <div class="stat-value" id="totalUsers">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Всього записів</div>
+          <div class="stat-value" id="totalEntries">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Загальний час</div>
+          <div class="stat-value" id="totalHours">0 год</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Активних сьогодні</div>
+          <div class="stat-value" id="activeToday">0</div>
+        </div>
+      </div>
+
+      <!-- Users section -->
+      <div id="usersSection" class="admin-section active">
+        <div class="table-container">
+          <div class="table-header">
+            <h2>Користувачі</h2>
+            <input
+              type="text"
+              class="search-box"
+              id="searchInput"
+              placeholder="Пошук..."
+              oninput="filterUsers()"
+            />
+          </div>
+          <table id="usersTable">
+            <thead>
+              <tr>
+                <th>Ім'я</th>
+                <th>Email</th>
+                <!-- Added Role column -->
+                <th>Роль</th>
+                <th>Записів</th>
+                <th>Години</th>
+                <th>Бали</th>
+                <th>Реєстрація</th>
+                <th>Дії</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Database section -->
+      <div id="databaseSection" class="admin-section">
+        <div class="settings-panel">
+          <h3>💾 Управління базою даних</h3>
+          <div class="info-box">
+            <p>
+              Тут ви можете керувати даними системи. Усі дані зберігаються
+              локально в браузері (localStorage).
+            </p>
+          </div>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap">
+            <button class="btn btn-primary" onclick="exportData()">
+              📥 Експортувати дані
+            </button>
+            <button
+              class="btn btn-secondary"
+              onclick="document.getElementById('importFile').click()"
+            >
+              📤 Імпортувати дані
+            </button>
+            <button class="btn btn-danger" onclick="removeUndefinedUsers()">
+              🗑️ Очистити базу даних
+            </button>
+          </div>
+          <input
+            type="file"
+            id="importFile"
+            style="display: none"
+            accept=".json"
+            onchange="importData(event)"
+          />
+
+          <div style="margin-top: 24px">
+            <h3>Статистика бази даних</h3>
+            <table style="margin-top: 16px">
+              <thead>
+                <tr>
+                  <th>Таблиця</th>
+                  <th>Записів</th>
+                  <th>Розмір (KB)</th>
+                </tr>
+              </thead>
+              <tbody id="dbStatsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monitoring section -->
+      <div id="monitoringSection" class="admin-section">
+        <div class="chart-container">
+          <h3 class="chart-title">📊 Активність системи</h3>
+          <div class="info-box">
+            <p>
+              Стан системи:
+              <strong style="color: #10b981">Працює нормально ✓</strong>
+            </p>
+            <p>Останнє оновлення: <span id="lastUpdate"></span></p>
+            <p>Використання пам'яті: <span id="memoryUsage"></span></p>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <h3 class="chart-title">📝 Журнал активності</h3>
+          <div class="activity-log" id="activityLog"></div>
+        </div>
+      </div>
+
+      <!-- Analytics section -->
+      <div id="analyticsSection" class="admin-section">
+        <div class="chart-container">
+          <h3 class="chart-title">📈 Аналітика використання</h3>
+          <div class="stats" style="margin-top: 16px">
+            <div class="stat-card">
+              <div class="stat-label">Середньо записів/користувач</div>
+              <div class="stat-value" id="avgEntriesPerUser">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Середньо годин/користувач</div>
+              <div class="stat-value" id="avgHoursPerUser">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Завдань виконано</div>
+              <div class="stat-value" id="totalTasksCompleted">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Всього категорій</div>
+              <div class="stat-value" id="totalCategories">0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <h3 style="margin-bottom: 16px">Топ користувачів за балами</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Місце</th>
+                <th>Ім'я</th>
+                <th>Бали</th>
+                <th>Записів</th>
+                <th>Годин</th>
+              </tr>
+            </thead>
+            <tbody id="topUsersTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Settings section -->
+      <div id="settingsSection" class="admin-section">
+        <div class="settings-panel">
+          <h3>⚙️ Налаштування правил нарахування балів</h3>
+          <form id="pointsSettingsForm" onsubmit="savePointsSettings(event)">
+            <div class="form-group">
+              <label for="pointsPerEntry">Бали за створення запису</label>
+              <input
+                type="number"
+                id="pointsPerEntry"
+                value="10"
+                min="0"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="pointsPerTask">Бали за виконане завдання</label>
+              <input
+                type="number"
+                id="pointsPerTask"
+                value="5"
+                min="0"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="pointsPerHour">Бали за годину навчання</label>
+              <input
+                type="number"
+                id="pointsPerHour"
+                value="2"
+                min="0"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">
+              Зберегти налаштування
+            </button>
+          </form>
+        </div>
+
+        <div class="settings-panel">
+          <h3>🏆 Налаштування нагород і досягнень</h3>
+          <div class="info-box">
+            <p>
+              Система досягнень автоматично нараховує нагороди користувачам за:
+            </p>
+            <ul style="margin-left: 20px; margin-top: 8px">
+              <li>Створення записів (1, 10, 50 записів)</li>
+              <li>Час навчання (10, 50, 100 годин)</li>
+              <li>Виконання завдань (50+ завдань)</li>
+              <li>Організацію категорій (5+ категорій)</li>
+            </ul>
+          </div>
+          <button class="btn btn-primary" onclick="recalculateAchievements()">
+            🔄 Перерахувати досягнення
+          </button>
+        </div>
+
+        <div class="settings-panel">
+          <h3>🔧 Технічні налаштування</h3>
+          <form
+            onsubmit="event.preventDefault(); alert('Налаштування збережено!');"
+          >
+            <div class="form-group">
+              <label for="platformVersion">Версія платформи</label>
+              <input type="text" id="platformVersion" value="1.0.0" readonly />
+            </div>
+            <div class="form-group">
+              <label for="maintenanceMode">Режим обслуговування</label>
+              <select id="maintenanceMode">
+                <option value="off">Вимкнено</option>
+                <option value="on">Увімкнено</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Зберегти</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let users = [];
+      let entries = [];
+      let categories = [];
+      let filteredUsers = [];
+      let pointsSettings = {
+        perEntry: 10,
+        perTask: 5,
+        perHour: 2,
+      };
+
+      // Added authentication check
+      function checkAuth() {
+        const userId = localStorage.getItem("currentUser");
+        if (!userId) {
+          window.location.href = "index.html";
+          return;
+        }
+
+        const allUsers = JSON.parse(localStorage.getItem("users") || "[]");
+        const currentUser = allUsers.find((u) => u.id === userId);
+
+        if (!currentUser || currentUser.role !== "admin") {
+          alert("У вас немає прав доступу до адмін-панелі!");
+          localStorage.removeItem("currentUser");
+          window.location.href = "index.html";
+          return;
+        }
+      }
+
+      // Added logout function
+      function logout() {
+        localStorage.removeItem("currentUser");
+        window.location.href = "index.html";
+      }
+
+      function switchAdminTab(tabName) {
+        document
+          .querySelectorAll(".admin-tab")
+          .forEach((tab) => tab.classList.remove("active"));
+        document
+          .querySelectorAll(".admin-section")
+          .forEach((section) => section.classList.remove("active"));
+
+        event.target.classList.add("active");
+        document.getElementById(tabName + "Section").classList.add("active");
+
+        if (tabName === "database") {
+          updateDatabaseStats();
+        } else if (tabName === "monitoring") {
+          updateMonitoring();
+        } else if (tabName === "analytics") {
+          updateAnalytics();
+        } else if (tabName === "settings") {
+          loadPointsSettings();
+        }
+      }
+
+      // Load data
+      function loadData() {
+        // Exclude admins from the main user list for this table
+        users = JSON.parse(localStorage.getItem("users") || "[]").filter(
+          (u) => u.role !== "admin"
+        );
+        entries = JSON.parse(localStorage.getItem("entries") || "[]");
+        categories = JSON.parse(localStorage.getItem("categories") || "[]");
+        filteredUsers = [...users];
+
+        loadPointsSettings();
+        renderUsers();
+        updateStats();
+      }
+
+      function loadPointsSettings() {
+        const saved = localStorage.getItem("pointsSettings");
+        if (saved) {
+          pointsSettings = JSON.parse(saved);
+        }
+        document.getElementById("pointsPerEntry").value =
+          pointsSettings.perEntry;
+        document.getElementById("pointsPerTask").value = pointsSettings.perTask;
+        document.getElementById("pointsPerHour").value = pointsSettings.perHour;
+      }
+
+      function savePointsSettings(event) {
+        event.preventDefault();
+        pointsSettings = {
+          perEntry: parseInt(document.getElementById("pointsPerEntry").value),
+          perTask: parseInt(document.getElementById("pointsPerTask").value),
+          perHour: parseInt(document.getElementById("pointsPerHour").value),
+        };
+        localStorage.setItem("pointsSettings", JSON.stringify(pointsSettings));
+        alert("Налаштування балів збережено!");
+        renderUsers(); // Re-render to show updated points
+      }
+
+      // Adjusted points calculation to use 'hours' property from entries and added tasks check
+      function calculateUserPoints(userId) {
+        const userEntries = entries.filter((e) => e.userId === userId);
+        let points = 0;
+        points += userEntries.length * pointsSettings.perEntry;
+        points +=
+          userEntries.reduce((sum, entry) => {
+            // Ensure entry.tasks exists and is an array before filtering
+            const completed = (entry.tasks || []).filter(
+              (t) => t.completed
+            ).length;
+            return sum + completed;
+          }, 0) * pointsSettings.perTask;
+        // Use 'hours' property for total hours, ensuring it's a float
+        points +=
+          Math.floor(
+            userEntries.reduce(
+              (sum, entry) => sum + parseFloat(entry.hours || 0),
+              0
+            )
+          ) * pointsSettings.perHour;
+        return points;
+      }
+
+      // Render users table
+      function renderUsers() {
+        const tbody = document.getElementById("usersTableBody");
+
+        if (filteredUsers.length === 0) {
+          // Updated empty state to use provided class and icon
+          tbody.innerHTML =
+            '<tr><td colspan="8" class="empty-state"><div class="empty-state-icon">👤</div><p>Користувачів не знайдено</p></td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = filteredUsers
+          .map((user) => {
+            const userEntries = entries.filter((e) => e.userId === user.id);
+            // Use 'hours' property from entries
+            const totalHours = userEntries.reduce(
+              (sum, entry) => sum + parseFloat(entry.hours || 0),
+              0
+            );
+            const points = calculateUserPoints(user.id);
+
+            // Added Role column display and styling, and updated colspan for empty state
+            return `
+                    <tr>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td><span style="color: ${
+                          user.role === "admin" ? "#FF6B9D" : "#64748b"
+                        }; font-weight: 600;">${
+              user.role === "admin" ? "Адмін" : "Користувач"
+            }</span></td>
+                        <td>${userEntries.length}</td>
+                        <td>${totalHours.toFixed(1)}</td>
+                        <td><strong>${points}</strong></td>
+                        <td>${new Date(user.createdAt).toLocaleDateString(
+                          "uk-UA"
+                        )}</td>
+                        <td>
+                            <button class="btn btn-danger btn-small" onclick="deleteUser('${
+                              user.id
+                            }')">Видалити</button>
+                        </td>
+                    </tr>
+                `;
+          })
+          .join("");
+      }
+
+      // Filter users
+      function filterUsers() {
+        const search = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        filteredUsers = users.filter(
+          (user) =>
+            user.name.toLowerCase().includes(search) ||
+            user.email.toLowerCase().includes(search)
+        );
+        renderUsers();
+      }
+
+      // Delete user
+      function deleteUser(userId) {
+        // Added confirmation before deleting user and their data
+        if (confirm("Видалити цього користувача та всі його дані?")) {
+          const allUsers = JSON.parse(localStorage.getItem("users") || "[]");
+          localStorage.setItem(
+            "users",
+            JSON.stringify(allUsers.filter((u) => u.id !== userId))
+          );
+
+          const allEntries = JSON.parse(
+            localStorage.getItem("entries") || "[]"
+          );
+          localStorage.setItem(
+            "entries",
+            JSON.stringify(allEntries.filter((e) => e.userId !== userId))
+          );
+
+          const allCategories = JSON.parse(
+            localStorage.getItem("categories") || "[]"
+          );
+          localStorage.setItem(
+            "categories",
+            JSON.stringify(allCategories.filter((c) => c.userId !== userId))
+          );
+
+          loadData();
+        }
+      }
+
+      // Update statistics
+      function updateStats() {
+        // Ensure correct data types and formatting for display
+        document.getElementById("totalUsers").textContent = users.length;
+        document.getElementById("totalEntries").textContent = entries.length;
+        const totalHours = entries.reduce(
+          (sum, entry) => sum + parseFloat(entry.hours || 0),
+          0
+        );
+        document.getElementById("totalHours").textContent =
+          totalHours.toFixed(1) + " год";
+
+        const today = new Date().toDateString();
+        const activeToday = entries.filter(
+          (e) => new Date(e.createdAt).toDateString() === today
+        ).length;
+        document.getElementById("activeToday").textContent = activeToday;
+      }
+
+      function updateDatabaseStats() {
+        const tbody = document.getElementById("dbStatsTable");
+        const tables = [
+          { name: "Користувачі", data: JSON.stringify(users) },
+          { name: "Записи", data: JSON.stringify(entries) },
+          { name: "Категорії", data: JSON.stringify(categories) },
+        ];
+
+        tbody.innerHTML = tables
+          .map((table) => {
+            const size = (new Blob([table.data]).size / 1024).toFixed(2);
+            const count = JSON.parse(table.data).length;
+            return `
+                    <tr>
+                        <td>${table.name}</td>
+                        <td>${count}</td>
+                        <td>${size}</td>
+                    </tr>
+                `;
+          })
+          .join("");
+      }
+
+      function exportData() {
+        const data = {
+          users: JSON.parse(localStorage.getItem("users") || "[]"),
+          entries: JSON.parse(localStorage.getItem("entries") || "[]"),
+          categories: JSON.parse(localStorage.getItem("categories") || "[]"),
+          pointsSettings: JSON.parse(
+            localStorage.getItem("pointsSettings") || "{}"
+          ),
+          exportDate: new Date().toISOString(),
+        };
+
+        const blob = new Blob([JSON.stringify(data, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `diary-backup-${
+          new Date().toISOString().split("T")[0]
+        }.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          try {
+            const data = JSON.parse(e.target.result);
+
+            if (confirm("Імпортувати дані? Це замінить всі поточні дані!")) {
+              if (data.users)
+                localStorage.setItem("users", JSON.stringify(data.users));
+              if (data.entries)
+                localStorage.setItem("entries", JSON.stringify(data.entries));
+              if (data.categories)
+                localStorage.setItem(
+                  "categories",
+                  JSON.stringify(data.categories)
+                );
+              if (data.pointsSettings)
+                localStorage.setItem(
+                  "pointsSettings",
+                  JSON.stringify(data.pointsSettings)
+                );
+
+              loadData();
+              alert("Дані успішно імпортовано!");
+            }
+          } catch (error) {
+            alert("Помилка при імпорті даних!");
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      // Modified clearDatabase to not remove users, only entries/categories
+      function clearDatabase() {
+        if (confirm("Видалити всі дані системи? Ця дія незворотна!")) {
+          if (
+            confirm("Ви впевнені? Всі користувачі та записи будуть видалені!")
+          ) {
+            localStorage.removeItem("entries");
+            localStorage.removeItem("categories");
+            alert("База даних очищена! Користувачі збережені.");
+            loadData();
+          }
+        }
+      }
+
+      function updateMonitoring() {
+        document.getElementById("lastUpdate").textContent =
+          new Date().toLocaleString("uk-UA");
+
+        let totalSize = 0;
+        for (let key in localStorage) {
+          if (localStorage.hasOwnProperty(key)) {
+            totalSize += new Blob([localStorage[key]]).size;
+          }
+        }
+        document.getElementById("memoryUsage").textContent =
+          (totalSize / 1024).toFixed(2) + " KB";
+
+        const activityLog = document.getElementById("activityLog");
+        const recentEntries = [...entries]
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 20);
+
+        activityLog.innerHTML = recentEntries
+          .map((entry) => {
+            const user = users.find((u) => u.id === entry.userId);
+            return `
+                    <div class="activity-item">
+                        <div><strong>${
+                          user ? user.name : "Невідомий"
+                        }</strong> створив запис "${entry.title}"</div>
+                        <div class="activity-time">${new Date(
+                          entry.createdAt
+                        ).toLocaleString("uk-UA")}</div>
+                    </div>
+                `;
+          })
+          .join("");
+      }
+
+      function updateAnalytics() {
+        const avgEntries =
+          users.length > 0 ? (entries.length / users.length).toFixed(1) : 0;
+        document.getElementById("avgEntriesPerUser").textContent = avgEntries;
+
+        const totalHours = entries.reduce(
+          (sum, entry) => sum + parseFloat(entry.hours || 0),
+          0
+        );
+        const avgHours =
+          users.length > 0 ? (totalHours / users.length).toFixed(1) : 0;
+        document.getElementById("avgHoursPerUser").textContent = avgHours;
+
+        // Ensure tasks.completed is accessed safely
+        const totalTasksCompleted = entries.reduce(
+          (sum, entry) =>
+            sum + (entry.tasks || []).filter((t) => t.completed).length,
+          0
+        );
+        document.getElementById("totalTasksCompleted").textContent =
+          totalTasksCompleted;
+
+        document.getElementById("totalCategories").textContent =
+          categories.length;
+
+        const topUsers = users
+          .map((user) => ({
+            ...user,
+            points: calculateUserPoints(user.id),
+            entriesCount: entries.filter((e) => e.userId === user.id).length,
+            hours: entries
+              .filter((e) => e.userId === user.id)
+              .reduce((sum, entry) => sum + parseFloat(entry.hours || 0), 0),
+          }))
+          .sort((a, b) => b.points - a.points)
+          .slice(0, 10);
+
+        document.getElementById("topUsersTable").innerHTML = topUsers
+          .map(
+            (user, index) => `
+                <tr>
+                    <td><strong>${index + 1}</strong></td>
+                    <td>${user.name}</td>
+                    <td><strong>${user.points}</strong></td>
+                    <td>${user.entriesCount}</td>
+                    <td>${user.hours.toFixed(1)}</td>
+                </tr>
+            `
+          )
+          .join("");
+      }
+
+      // === НОВА ФУНКЦІЯ ===
+      // Видаляє всіх користувачів, у яких name === undefined, null або порожній рядок
+      function removeUndefinedUsers() {
+        if (
+          !confirm(
+            "Видалити всіх користувачів, у яких ім’я не вказано (undefined/null/порожнє)?\nВсі їхніх даних також будуть видалені записи та категорії."
+          )
+        ) {
+          return;
+        }
+
+        let allUsers = JSON.parse(localStorage.getItem("users") || "[]");
+
+        // Знаходимо «битих» користувачів
+        const badUsers = allUsers.filter((u) => !u.name || u.name.trim === "");
+
+        if (badUsers.length === 0) {
+          alert("Таких користувачів не знайдено");
+          return;
+        }
+
+        // Видаляємо їх записи та категорії
+        const badIds = badUsers.map((u) => u.id);
+
+        let entries = JSON.parse(localStorage.getItem("entries") || "[]");
+        entries = entries.filter((e) => !badIds.includes(e.userId));
+        localStorage.setItem("entries", JSON.stringify(entries));
+
+        let categories = JSON.parse(localStorage.getItem("categories") || "[]");
+        categories = categories.filter((c) => !badIds.includes(c.userId));
+        localStorage.setItem("categories", JSON.stringify(categories));
+
+        // Видаляємо самих користувачів
+        allUsers = allUsers.filter((u) => badIds.indexOf(u.id) === -1);
+        localStorage.setItem("users", JSON.stringify(allUsers));
+
+        alert(`Успішно видалено ${badUsers.length} битих акаунтів`);
+        loadData(); // оновлюємо таблицю
+      }
+
+      function recalculateAchievements() {
+        // Updated alert message for achievements
+        alert(
+          "Досягнення автоматично оновлюються в реальному часі для кожного користувача!"
+        );
+      }
+
+      // Call checkAuth on load
+      checkAuth();
+      loadData();
+      // Removed setInterval for stats update, as it might not be necessary with frequent reloads or manual updates.
+    </script>
+  </body>
+</html>
