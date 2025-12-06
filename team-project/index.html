@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Щоденник навчання - Вхід</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      body::before,
+      body::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        animation: float 20s infinite ease-in-out;
+      }
+
+      body::before {
+        width: 400px;
+        height: 400px;
+        top: -200px;
+        left: -200px;
+        animation-delay: 0s;
+      }
+
+      body::after {
+        width: 300px;
+        height: 300px;
+        bottom: -150px;
+        right: -150px;
+        animation-delay: 5s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        33% {
+          transform: translate(50px, -50px) scale(1.1);
+        }
+        66% {
+          transform: translate(-30px, 30px) scale(0.9);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        width: 100%;
+        max-width: 450px;
+        padding: 40px;
+        position: relative;
+        z-index: 1;
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      h1 {
+        background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 32px;
+        margin-bottom: 8px;
+        text-align: center;
+      }
+
+      .subtitle {
+        color: #64748b;
+        text-align: center;
+        margin-bottom: 32px;
+        font-size: 14px;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 24px;
+        background: #f8fafc;
+        padding: 6px;
+        border-radius: 12px;
+      }
+
+      .tab {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        background: transparent;
+        color: #64748b;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .tab.active {
+        background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+        color: white;
+        transform: scale(1.02);
+        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+      }
+
+      .form {
+        display: none;
+      }
+
+      .form.active {
+        display: block;
+        animation: fadeInUp 0.4s ease-out;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 6px;
+        color: #334155;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 14px;
+        transition: all 0.3s;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: #ff6b6b;
+        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+        transform: translateY(-1px);
+      }
+
+      .error {
+        color: #ef4444;
+        font-size: 13px;
+        margin-top: 6px;
+        display: none;
+        animation: shake 0.4s;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-10px);
+        }
+        75% {
+          transform: translateX(10px);
+        }
+      }
+
+      .error.show {
+        display: block;
+      }
+
+      .success {
+        color: #10b981;
+        font-size: 13px;
+        margin-top: 6px;
+        display: none;
+      }
+
+      .success.show {
+        display: block;
+        animation: fadeInUp 0.4s;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-top: 8px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+      }
+
+      .btn-primary:active {
+        transform: translateY(0);
+      }
+
+      .role-selection {
+        display: flex;
+        gap: 12px;
+        margin-top: 8px;
+      }
+
+      .role-option {
+        flex: 1;
+        padding: 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        background: white;
+      }
+
+      .role-option:hover {
+        border-color: #ff6b6b;
+        transform: translateY(-2px);
+      }
+
+      .role-option.selected {
+        background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+        border-color: #ff6b6b;
+        color: white;
+        transform: scale(1.05);
+      }
+
+      .role-icon {
+        font-size: 32px;
+        margin-bottom: 8px;
+      }
+
+      .role-label {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      a {
+        color: #ff6b6b;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📚 Щоденник навчання</h1>
+      <p class="subtitle">Відстежуйте свій прогрес у навчанні</p>
+
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('login', event)">
+          Вхід
+        </button>
+        <button class="tab" onclick="switchTab('register', event)">
+          Реєстрація
+        </button>
+        <button class="tab" onclick="switchTab('forgot', event)">Паролі</button>
+      </div>
+
+      <!-- Login Form -->
+      <form class="form active" id="loginForm">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" required />
+          <div class="error" id="loginEmailError"></div>
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Пароль</label>
+          <input type="password" id="loginPassword" required />
+          <div class="error" id="loginPasswordError"></div>
+        </div>
+        <div class="error" id="loginError"></div>
+        <button type="submit" class="btn btn-primary">Увійти</button>
+
+        <!-- Лінк "Забули пароль?" -->
+        <p style="margin-top: 12px; text-align: center; font-size: 13px">
+          <a href="#" onclick="openForgotTab(event)">Забули пароль?</a>
+        </p>
+      </form>
+
+      <!-- Register Form -->
+      <form class="form" id="registerForm">
+        <div class="form-group">
+          <label for="registerName">Ім'я</label>
+          <input type="text" id="registerName" required />
+          <div class="error" id="registerNameError"></div>
+        </div>
+        <div class="form-group">
+          <label for="registerEmail">Email</label>
+          <input type="email" id="registerEmail" required />
+          <div class="error" id="registerEmailError"></div>
+        </div>
+        <div class="form-group">
+          <label for="registerPassword">Пароль</label>
+          <input type="password" id="registerPassword" required minlength="6" />
+          <div class="error" id="registerPasswordError"></div>
+        </div>
+        <div class="form-group">
+          <label for="registerConfirmPassword">Підтвердження паролю</label>
+          <input
+            type="password"
+            id="registerConfirmPassword"
+            required
+            minlength="6"
+          />
+          <div class="error" id="registerConfirmPasswordError"></div>
+        </div>
+        <div class="form-group">
+          <label>Виберіть роль</label>
+          <div class="role-selection">
+            <div
+              class="role-option selected"
+              onclick="selectRole('user')"
+              data-role="user"
+            >
+              <div class="role-icon">👤</div>
+              <div class="role-label">Користувач</div>
+            </div>
+            <div
+              class="role-option"
+              onclick="selectRole('admin')"
+              data-role="admin"
+            >
+              <div class="role-icon">🔐</div>
+              <div class="role-label">Адміністратор</div>
+            </div>
+          </div>
+        </div>
+        <div class="error" id="registerError"></div>
+        <div class="success" id="registerSuccess"></div>
+        <button type="submit" class="btn btn-primary">Зареєструватися</button>
+      </form>
+
+      <!-- Forgot Password: 2 кроки -->
+      <form class="form" id="forgotForm">
+        <!-- Крок 1: користувач вводить email -->
+        <div id="forgotStepEmail">
+          <div class="form-group">
+            <label for="forgotEmail">Email</label>
+            <input type="email" id="forgotEmail" />
+            <div class="error" id="forgotEmailError"></div>
+          </div>
+          <div class="error" id="forgotError"></div>
+          <div class="success" id="forgotSuccess"></div>
+          <button type="submit" class="btn btn-primary">
+            Надіслати посилання для скидання паролю
+          </button>
+        </div>
+
+        <!-- Крок 2: користувач переходить за посиланням і вводить новий пароль -->
+        <div id="forgotStepReset" class="hidden">
+          <div class="form-group">
+            <label for="newPassword">Новий пароль</label>
+            <input type="password" id="newPassword" minlength="6" />
+            <div class="error" id="newPasswordError"></div>
+          </div>
+          <div class="form-group">
+            <label for="confirmNewPassword">Підтвердження паролю</label>
+            <input type="password" id="confirmNewPassword" minlength="6" />
+            <div class="error" id="confirmNewPasswordError"></div>
+          </div>
+          <div class="error" id="forgotResetError"></div>
+          <div class="success" id="forgotResetSuccess"></div>
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="submitNewPassword()"
+          >
+            Зберегти
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      let selectedRole = "user";
+      // дані для reset-посилання
+      let activeResetToken = null;
+      let activeResetUserId = null;
+
+      function selectRole(role) {
+        selectedRole = role;
+        document.querySelectorAll(".role-option").forEach((opt) => {
+          opt.classList.remove("selected");
+        });
+        document
+          .querySelector(`[data-role="${role}"]`)
+          .classList.add("selected");
+      }
+
+      // "Забули пароль?" під формою логіну
+      function openForgotTab(event) {
+        event.preventDefault();
+        const tabs = document.querySelectorAll(".tab");
+        const forgotTabButton = tabs[2]; // третя вкладка - "Скидання паролю"
+        const fakeEvent = { target: forgotTabButton };
+        switchTab("forgot", fakeEvent);
+      }
+
+      function switchTab(tab, event) {
+        const tabs = document.querySelectorAll(".tab");
+        const forms = document.querySelectorAll(".form");
+
+        tabs.forEach((t) => t.classList.remove("active"));
+        forms.forEach((f) => f.classList.remove("active"));
+
+        event.target.classList.add("active");
+        document.getElementById(tab + "Form").classList.add("active");
+
+        document
+          .querySelectorAll(".error")
+          .forEach((e) => e.classList.remove("show"));
+        document
+          .querySelectorAll(".success")
+          .forEach((e) => e.classList.remove("show"));
+
+        // при відкритті вкладки "Скидання паролю" повертаємося до кроку 1
+        if (tab === "forgot") {
+          document.getElementById("forgotStepEmail").classList.remove("hidden");
+          document.getElementById("forgotStepReset").classList.add("hidden");
+          document.getElementById("forgotForm").reset();
+          activeResetToken = null;
+          activeResetUserId = null;
+        }
+      }
+
+      // ВХІД
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const email = document.getElementById("loginEmail").value.trim();
+          const password = document.getElementById("loginPassword").value;
+          const errorEl = document.getElementById("loginError");
+
+          errorEl.classList.remove("show");
+
+          const users = JSON.parse(localStorage.getItem("users") || "[]");
+          const user = users.find(
+            (u) => u.email === email && u.password === password
+          );
+
+          if (user) {
+            // зберігаємо тільки id
+            localStorage.setItem("currentUser", user.id);
+
+            if (user.role === "admin") {
+              window.location.href = "./admin.html";
+            } else {
+              window.location.href = "./diary.html";
+            }
+          } else {
+            errorEl.textContent = "Невірний email або пароль";
+            errorEl.classList.add("show");
+          }
+        });
+
+      // РЕЄСТРАЦІЯ
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const name = document.getElementById("registerName").value.trim();
+          const email = document.getElementById("registerEmail").value.trim();
+          const password = document.getElementById("registerPassword").value;
+          const confirmPassword = document.getElementById(
+            "registerConfirmPassword"
+          ).value;
+          const errorEl = document.getElementById("registerError");
+          const successEl = document.getElementById("registerSuccess");
+
+          errorEl.classList.remove("show");
+          successEl.classList.remove("show");
+
+          if (password !== confirmPassword) {
+            errorEl.textContent = "Паролі не співпадають";
+            errorEl.classList.add("show");
+            return;
+          }
+
+          const users = JSON.parse(localStorage.getItem("users") || "[]");
+
+          if (users.find((u) => u.email === email)) {
+            errorEl.textContent = "Користувач з таким email вже існує";
+            errorEl.classList.add("show");
+            return;
+          }
+
+          const newUser = {
+            id: Date.now().toString(),
+            name,
+            email,
+            password,
+            role: selectedRole,
+            createdAt: new Date().toISOString(),
+          };
+
+          users.push(newUser);
+          localStorage.setItem("users", JSON.stringify(users));
+
+          successEl.textContent = "Реєстрація успішна! Тепер ви можете увійти.";
+          successEl.classList.add("show");
+
+          document.getElementById("registerForm").reset();
+          selectedRole = "user";
+          selectRole("user");
+
+          setTimeout(() => {
+            const loginTab = document.querySelector(".tab");
+            const fakeEvent = { target: loginTab };
+            switchTab("login", fakeEvent);
+          }, 2000);
+        });
+
+      // КРОК 1: користувач вводить email, система "надсилає" посилання
+      document
+        .getElementById("forgotForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const email = document.getElementById("forgotEmail").value.trim();
+          const errorEl = document.getElementById("forgotError");
+          const successEl = document.getElementById("forgotSuccess");
+
+          errorEl.classList.remove("show");
+          successEl.classList.remove("show");
+
+          if (!email) {
+            errorEl.textContent = "Введіть email";
+            errorEl.classList.add("show");
+            return;
+          }
+
+          const users = JSON.parse(localStorage.getItem("users") || "[]");
+          const user = users.find((u) => u.email === email);
+
+          if (!user) {
+            errorEl.textContent = "Користувача з таким email не знайдено";
+            errorEl.classList.add("show");
+            return;
+          }
+
+          // Генерація унікального одноразового посилання (токена) на 30 хв
+          const token =
+            Math.random().toString(36).substring(2) + Date.now().toString(36);
+          const expiresAt = Date.now() + 30 * 60 * 1000; // 30 хвилин
+
+          let resetTokens = JSON.parse(
+            localStorage.getItem("resetTokens") || "[]"
+          );
+          // видаляємо старі токени для цього користувача
+          resetTokens = resetTokens.filter((t) => t.userId !== user.id);
+          resetTokens.push({ token, userId: user.id, expiresAt });
+          localStorage.setItem("resetTokens", JSON.stringify(resetTokens));
+
+          activeResetToken = token;
+          activeResetUserId = user.id;
+
+          // Імітація відправки листа + кнопка "Перейти за посиланням"
+          successEl.innerHTML =
+            "Система згенерувала унікальне одноразове посилання " +
+            "(дійсне 30 хвилин) та надіслала його на вашу електронну пошту.<br>" +
+            "<small>У демо-версії натисніть кнопку нижче, щоб перейти за цим посиланням.</small><br><br>" +
+            "<button type='button' class='btn btn-primary' id='openResetFromEmailBtn'>Перейти за посиланням</button>";
+          successEl.classList.add("show");
+
+          const btn = document.getElementById("openResetFromEmailBtn");
+          if (btn) {
+            btn.addEventListener("click", openResetFromEmail);
+          }
+        });
+
+      // "Користувач переходить за посиланням" (натискає кнопку з листа)
+      function openResetFromEmail() {
+        const errorEl = document.getElementById("forgotError");
+        const successEl = document.getElementById("forgotSuccess");
+
+        errorEl.classList.remove("show");
+
+        let resetTokens = JSON.parse(
+          localStorage.getItem("resetTokens") || "[]"
+        );
+        const tokenData = resetTokens.find(
+          (t) => t.token === activeResetToken && t.userId === activeResetUserId
+        );
+
+        if (!tokenData) {
+          errorEl.textContent =
+            "Посилання недійсне або вже використане. Спробуйте скинути пароль ще раз.";
+          errorEl.classList.add("show");
+          successEl.classList.remove("show");
+          return;
+        }
+
+        if (tokenData.expiresAt < Date.now()) {
+          errorEl.textContent =
+            "Час дії посилання (30 хвилин) вичерпано. Спробуйте скинути пароль ще раз.";
+          errorEl.classList.add("show");
+          successEl.classList.remove("show");
+          // видаляємо прострочений токен
+          resetTokens = resetTokens.filter((t) => t.token !== tokenData.token);
+          localStorage.setItem("resetTokens", JSON.stringify(resetTokens));
+          activeResetToken = null;
+          activeResetUserId = null;
+          return;
+        }
+
+        // показуємо форму введення нового паролю
+        document.getElementById("forgotStepEmail").classList.add("hidden");
+        document.getElementById("forgotStepReset").classList.remove("hidden");
+        successEl.classList.remove("show");
+      }
+
+      // КРОК 2: користувач вводить новий пароль (двічі) і натискає "Зберегти"
+      function submitNewPassword() {
+        const newPassword = document.getElementById("newPassword").value;
+        const confirmNewPassword =
+          document.getElementById("confirmNewPassword").value;
+
+        const errorEl = document.getElementById("forgotResetError");
+        const successEl = document.getElementById("forgotResetSuccess");
+
+        errorEl.classList.remove("show");
+        successEl.classList.remove("show");
+
+        if (!newPassword || newPassword.length < 6) {
+          errorEl.textContent = "Пароль має містити щонайменше 6 символів.";
+          errorEl.classList.add("show");
+          return;
+        }
+
+        if (newPassword !== confirmNewPassword) {
+          errorEl.textContent = "Паролі не співпадають.";
+          errorEl.classList.add("show");
+          return;
+        }
+
+        if (!activeResetToken || !activeResetUserId) {
+          errorEl.textContent =
+            "Посилання для скидання паролю недійсне. Спробуйте ще раз.";
+          errorEl.classList.add("show");
+          return;
+        }
+
+        let resetTokens = JSON.parse(
+          localStorage.getItem("resetTokens") || "[]"
+        );
+        const tokenData = resetTokens.find(
+          (t) => t.token === activeResetToken && t.userId === activeResetUserId
+        );
+
+        if (!tokenData || tokenData.expiresAt < Date.now()) {
+          errorEl.textContent =
+            "Час дії посилання (30 хвилин) вичерпано. Спробуйте скинути пароль ще раз.";
+          errorEl.classList.add("show");
+          resetTokens = resetTokens.filter((t) => t.token !== activeResetToken);
+          localStorage.setItem("resetTokens", JSON.stringify(resetTokens));
+          activeResetToken = null;
+          activeResetUserId = null;
+          return;
+        }
+
+        const users = JSON.parse(localStorage.getItem("users") || "[]");
+        const userIndex = users.findIndex((u) => u.id === activeResetUserId);
+
+        if (userIndex === -1) {
+          errorEl.textContent = "Користувача не знайдено.";
+          errorEl.classList.add("show");
+          return;
+        }
+
+        // Система зберігає новий пароль
+        users[userIndex].password = newPassword;
+        localStorage.setItem("users", JSON.stringify(users));
+
+        // Одноразовість: видаляємо використаний токен
+        resetTokens = resetTokens.filter((t) => t.token !== activeResetToken);
+        localStorage.setItem("resetTokens", JSON.stringify(resetTokens));
+
+        const user = users[userIndex];
+        activeResetToken = null;
+        activeResetUserId = null;
+
+        // Автоматичний вхід в систему
+        localStorage.setItem("currentUser", user.id);
+        successEl.textContent =
+          "Пароль успішно змінено. Виконуємо вхід до системи...";
+        successEl.classList.add("show");
+
+        setTimeout(() => {
+          if (user.role === "admin") {
+            window.location.href = "./admin.html";
+          } else {
+            window.location.href = "./diary.html";
+          }
+        }, 1500);
+      }
+
+      function initializeDemoData() {
+        if (!localStorage.getItem("users")) {
+          const demoUsers = [
+            {
+              id: "1",
+              name: "Олена Петренко",
+              email: "user@test.com",
+              password: "user123",
+              role: "user",
+              createdAt: new Date(
+                Date.now() - 30 * 24 * 60 * 60 * 1000
+              ).toISOString(),
+            },
+            {
+              id: "2",
+              name: "Адмін Система",
+              email: "admin@test.com",
+              password: "admin123",
+              role: "admin",
+              createdAt: new Date(
+                Date.now() - 60 * 24 * 60 * 60 * 1000
+              ).toISOString(),
+            },
+            {
+              id: "3",
+              name: "Іван Коваль",
+              email: "ivan@test.com",
+              password: "ivan123",
+              role: "user",
+              createdAt: new Date(
+                Date.now() - 20 * 24 * 60 * 60 * 1000
+              ).toISOString(),
+            },
+            {
+              id: "4",
+              name: "Марія Шевченко",
+              email: "maria@test.com",
+              password: "maria123",
+              role: "user",
+              createdAt: new Date(
+                Date.now() - 15 * 24 * 60 * 60 * 1000
+              ).toISOString(),
+            },
+          ];
+          localStorage.setItem("users", JSON.stringify(demoUsers));
+
+          const demoCategories = [
+            {
+              id: "1",
+              name: "JavaScript",
+              color: "#f7df1e",
+              icon: "💻",
+              userId: "1",
+            },
+            {
+              id: "2",
+              name: "Python",
+              color: "#3776ab",
+              icon: "🐍",
+              userId: "1",
+            },
+            {
+              id: "3",
+              name: "Математика",
+              color: "#ff6b6b",
+              icon: "📐",
+              userId: "1",
+            },
+            {
+              id: "4",
+              name: "Дизайн",
+              color: "#a29bfe",
+              icon: "🎨",
+              userId: "1",
+            },
+          ];
+          localStorage.setItem("categories", JSON.stringify(demoCategories));
+
+          const demoEntries = [
+            {
+              id: "1",
+              userId: "1",
+              title: "Вивчення React Hooks",
+              description:
+                "Розібрав useState, useEffect та useContext. Створив простий додаток для практики.",
+              date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+                .toISOString()
+                .split("T")[0],
+              studyTime: 3,
+              categories: ["1"],
+              tasks: [
+                { id: "1", text: "Прочитати документацію", completed: true },
+                { id: "2", text: "Створити проект", completed: true },
+                { id: "3", text: "Додати компоненти", completed: false },
+              ],
+              createdAt: new Date(
+                Date.now() - 2 * 24 * 60 * 60 * 1000
+              ).toISOString(),
+            },
+            {
+              id: "2",
+              userId: "1",
+              title: "Основи Python",
+              description: "Вивчав синтаксис, змінні, цикли та функції.",
+              date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
+                .toISOString()
+                .split("T")[0],
+              studyTime: 2,
+              categories: ["2"],
+              tasks: [
+                { id: "1", text: "Встановити Python", completed: true },
+                { id: "2", text: "Написати програму", completed: true },
+              ],
+              createdAt: new Date(
+                Date.now() - 5 * 24 * 60 * 60 * 1000
+              ).toISOString(),
+            },
+          ];
+          localStorage.setItem("entries", JSON.stringify(demoEntries));
+
+          const pointsSettings = {
+            entryCreated: 10,
+            taskCompleted: 5,
+            studyHour: 15,
+            categoryCreated: 3,
+          };
+          localStorage.setItem(
+            "pointsSettings",
+            JSON.stringify(pointsSettings)
+          );
+
+          const achievementsSettings = [
+            {
+              id: "1",
+              name: "Перший запис",
+              description: "Створіть свій перший запис",
+              icon: "🎯",
+              condition: "entries_1",
+              active: true,
+            },
+            {
+              id: "2",
+              name: "Наполегливість",
+              description: "Створіть 10 записів",
+              icon: "💪",
+              condition: "entries_10",
+              active: true,
+            },
+            {
+              id: "3",
+              name: "Марафонець",
+              description: "Навчайтесь 50 годин",
+              icon: "🏃",
+              condition: "hours_50",
+              active: true,
+            },
+            {
+              id: "4",
+              name: "Експерт",
+              description: "Отримайте 500 балів",
+              icon: "🏆",
+              condition: "points_500",
+              active: true,
+            },
+          ];
+          localStorage.setItem(
+            "achievementsSettings",
+            JSON.stringify(achievementsSettings)
+          );
+
+          const userPoints = {
+            1: 75,
+            2: 0,
+            3: 120,
+            4: 50,
+          };
+          localStorage.setItem("userPoints", JSON.stringify(userPoints));
+
+          const userAchievements = {
+            1: ["1"],
+            2: [],
+            3: ["1"],
+            4: ["1"],
+          };
+          localStorage.setItem(
+            "userAchievements",
+            JSON.stringify(userAchievements)
+          );
+        }
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        initializeDemoData();
+        console.log("[v0] Page loaded and ready");
+      });
+    </script>
+  </body>
+</html>
